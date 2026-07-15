@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#14102B">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Antara · AI Personal Journal</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Outfit:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg0:#14102B; --bg1:#241740;
+  --ink:#F5F1FF; --dim:#A89DC9; --faint:#7A6FA0;
+  --card:rgba(245,241,255,.055); --line:rgba(245,241,255,.12);
+  --personal:#FF8A5C; --health:#45D69A; --wealth:#FFC94D; --spiritual:#B79CFF;
+  --r:16px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;min-height:100vh;color:var(--ink);
+  font-family:'Outfit','Segoe UI',system-ui,sans-serif;
+  background:
+    radial-gradient(700px 500px at 85% -10%, rgba(183,156,255,.22), transparent 60%),
+    radial-gradient(600px 420px at -10% 25%, rgba(255,138,92,.14), transparent 60%),
+    radial-gradient(500px 400px at 100% 90%, rgba(69,214,154,.10), transparent 60%),
+    linear-gradient(170deg, var(--bg1), var(--bg0) 60%);
+  background-attachment:fixed;
+  padding-bottom:92px;
+}
+header{padding:26px 20px 6px;max-width:720px;margin:0 auto}
+.brand{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:36px;letter-spacing:.02em;margin:0;
+  background:linear-gradient(90deg,#FFD9C4,#F5F1FF 40%,#D7C6FF);-webkit-background-clip:text;background-clip:text;color:transparent}
+.greeting{font-size:14px;color:var(--dim);margin:6px 0 2px}
+.tagline{font-size:13px;font-style:italic;color:var(--faint);margin:0}
+main{max-width:720px;margin:0 auto;padding:12px 16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-bottom:14px;
+  backdrop-filter:blur(6px);animation:rise .45s cubic-bezier(.2,.7,.3,1) both}
+.card:nth-child(2){animation-delay:.06s}.card:nth-child(3){animation-delay:.12s}.card:nth-child(4){animation-delay:.18s}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+h2{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:20px;margin:0 0 10px;color:#FBF9FF}
+input,textarea,select{width:100%;background:rgba(10,6,26,.45);border:1px solid var(--line);border-radius:12px;
+  color:var(--ink);padding:12px 13px;font-size:15px;outline:none;font-family:inherit;transition:border-color .2s}
+input:focus,textarea:focus{border-color:var(--spiritual)}
+textarea{min-height:92px;resize:vertical}
+.btn{background:linear-gradient(120deg,var(--personal),#FF6E9C);color:#241031;border:none;border-radius:12px;
+  padding:12px 18px;font-size:14px;font-weight:700;cursor:pointer;margin-top:10px;font-family:inherit;
+  transition:transform .15s,box-shadow .15s;box-shadow:0 4px 18px rgba(255,110,120,.25)}
+.btn:hover{transform:translateY(-1px)}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.6;cursor:wait}
+.ghost{background:transparent;color:var(--dim);border:1px solid rgba(168,157,201,.4);border-radius:12px;
+  padding:8px 13px;font-size:13px;cursor:pointer;font-family:inherit;transition:border-color .2s,color .2s}
+.ghost:hover{color:var(--ink);border-color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.chip{border-radius:999px;padding:7px 14px;font-size:12.5px;font-weight:700;cursor:pointer;border:1.5px solid;
+  font-family:inherit;transition:transform .12s,background .2s}
+.chip:active{transform:scale(.92)}
+.small{font-size:12.5px;color:var(--faint)}
+pre{white-space:pre-wrap;font-size:14px;line-height:1.6;color:#E2DCF5;margin:0;font-family:inherit}
+nav{position:fixed;bottom:0;left:0;right:0;background:rgba(16,11,38,.92);border-top:1px solid var(--line);
+  display:flex;justify-content:space-around;padding:8px 2px calc(8px + env(safe-area-inset-bottom));backdrop-filter:blur(12px)}
+nav button{background:none;border:none;color:#7A6FA0;font-size:10.5px;font-weight:500;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 7px;font-family:inherit;border-radius:10px;transition:color .2s}
+nav button svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav button.active{color:#FFD9C4;font-weight:700}
+.task-row{display:flex;align-items:center;gap:10px;padding:8px 0}
+.check{width:24px;height:24px;border-radius:8px;cursor:pointer;border:2px solid;background:transparent;
+  color:#241031;font-size:14px;font-weight:800;flex-shrink:0;transition:transform .15s,background .2s}
+.check:active{transform:scale(.85)}
+.toast{position:fixed;bottom:92px;left:50%;transform:translateX(-50%) translateY(20px);opacity:0;
+  background:linear-gradient(120deg,#FFD9C4,#D7C6FF);color:#241031;padding:10px 20px;border-radius:999px;
+  font-size:13px;font-weight:700;z-index:60;transition:all .3s;pointer-events:none;max-width:88vw;text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.reflect{margin-top:10px;padding:12px;background:rgba(183,156,255,.12);border:1px solid rgba(183,156,255,.25);border-radius:12px}
+.plan-box{margin-top:14px;border-top:1px solid var(--line);padding-top:14px}
+.one-thing{background:rgba(255,201,77,.12);border:1px solid rgba(255,201,77,.4);border-radius:12px;padding:12px;margin-bottom:12px}
+.one-thing b{color:var(--wealth)}
+/* Prana Wheel */
+.wheel-wrap{display:flex;align-items:center;gap:18px}
+.wheel{flex-shrink:0}
+.wheel .track{stroke:rgba(245,241,255,.09);fill:none;stroke-width:9}
+.wheel .arc{fill:none;stroke-width:9;stroke-linecap:round;transition:stroke-dashoffset 1s cubic-bezier(.2,.7,.3,1)}
+.wheel .core{animation:breathe 4.5s ease-in-out infinite;transform-origin:center}
+@keyframes breathe{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.22);opacity:1}}
+.legend{flex:1;min-width:0}
+.legend .row{display:flex;align-items:center;gap:8px;padding:3.5px 0;font-size:13px}
+.legend .dot{width:9px;height:9px;border-radius:99px;flex-shrink:0}
+.legend .pct{margin-left:auto;font-weight:700;font-variant-numeric:tabular-nums}
+.confetti{position:fixed;width:9px;height:14px;top:-20px;z-index:70;pointer-events:none;border-radius:2px;
+  animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:.9}}
+.streak-flame{display:inline-block;animation:flick 1.6s ease-in-out infinite}
+@keyframes flick{0%,100%{transform:rotate(-4deg) scale(1)}50%{transform:rotate(5deg) scale(1.12)}}
+@media (prefers-reduced-motion: reduce){
+  *{animation:none!important;transition:none!important}
+}
+.idea-card{border-left:3px solid}
+.mood-btn{font-size:22px;background:transparent;border:1.5px solid rgba(245,241,255,.15);border-radius:12px;
+  padding:5px 10px;cursor:pointer;transition:transform .15s,border-color .2s,background .2s}
+.mood-btn:active{transform:scale(.85)}
+.mood-btn.sel{border-color:var(--personal);background:rgba(255,138,92,.18)}
+:focus-visible{outline:2px solid var(--spiritual);outline-offset:2px}
+</style>
+</head>
+<body>
+<header>
+  <h1 class="brand">Antara</h1>
+  <p class="greeting" id="greeting"></p>
+  <p class="tagline" id="tagline"></p>
+</header>
+<main id="main"></main>
+<div class="toast" id="toast"></div>
+<nav id="nav" aria-label="Sections"></nav>
+
+<script>
+// ═══════════════════════════════════════════════
+//  ANTARA · AI Personal Journal — self-contained.
+//  The "AI" is a deterministic on-device engine:
+//  zero network, zero cost, instant answers.
+// ═══════════════════════════════════════════════
+
+const DOMAINS={
+  personal:{label:"Personal",color:"#FF8A5C",soft:"rgba(255,138,92,.15)"},
+  health:{label:"Health",color:"#45D69A",soft:"rgba(69,214,154,.15)"},
+  wealth:{label:"Wealth",color:"#FFC94D",soft:"rgba(255,201,77,.15)"},
+  spiritual:{label:"Spiritual",color:"#B79CFF",soft:"rgba(183,156,255,.17)"},
+};
+const SADHANA=["Shakti Chalana Kriya","Shoonya Meditation","Angamardana","Surya Shakti","YSS Lesson / Study","Chanting"];
+const MOODS=["😌","😊","🔥","😐","😩","🌊"];
+const TAGLINES=[
+  "The mind is a fine servant and a terrible boss. Let's file some paperwork on it.",
+  "Rome wasn't built in a day, but they were logging events hourly.",
+  "Your future self called. He wants receipts.",
+  "Discipline is just remembering what you actually want.",
+  "Small entries. Compound interest. Same math as wealth.",
+  "The breath doesn't need a reminder app. You, however…"];
+
+const ICONS={
+  today:'<circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/>',
+  journal:'<path d="M4 4h13a3 3 0 0 1 3 3v13H7a3 3 0 0 1-3-3z"/><path d="M8 8h8M8 12h8M8 16h5"/>',
+  tasks:'<path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/>',
+  log:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>',
+  ideas:'<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 1 4 10.5c-.8.7-1 1.5-1 2.5h-6c0-1-.2-1.8-1-2.5A6 6 0 0 1 12 3z"/>',
+  prompts:'<path d="M4 5h16v11H8l-4 4z"/><path d="M8 9h8M8 12h5"/>',
+  setup:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.2 2.2M16.9 16.9l2.2 2.2M19.1 4.9l-2.2 2.2M7.1 16.9l-2.2 2.2"/>'
+};
+
+let data=load(), tab="today";
+function load(){
+  try{return Object.assign({tasks:[],journal:[],events:[],prompts:[],ideas:[],sadhana:{},plan:{}},JSON.parse(localStorage.getItem("antara")||"{}"));}
+  catch(e){return{tasks:[],journal:[],events:[],prompts:[],ideas:[],sadhana:{},plan:{}};}
+}
+function save(){localStorage.setItem("antara",JSON.stringify(data));}
+function tKey(d){d=d||new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function flash(m){const t=document.getElementById("toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2400);}
+function greeting(){
+  const h=new Date().getHours();
+  if(h<4)return"Brahma muhurta approaches. The ambitious hour.";
+  if(h<6)return"Brahma muhurta. The universe is quiet. Perfect.";
+  if(h<12)return"Good morning. The day is still negotiable.";
+  if(h<17)return"Good afternoon. Momentum check.";
+  if(h<21)return"Good evening. Time to close the loops.";
+  return"Late hours. Log it, then sleep — that's an order.";
+}
+function confetti(){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  const colors=[DOMAINS.personal.color,DOMAINS.health.color,DOMAINS.wealth.color,DOMAINS.spiritual.color,"#F5F1FF"];
+  for(let i=0;i<44;i++){
+    const p=document.createElement("div");p.className="confetti";
+    p.style.left=Math.random()*100+"vw";
+    p.style.background=colors[i%colors.length];
+    p.style.animationDuration=(1.6+Math.random()*1.6)+"s";
+    p.style.animationDelay=(Math.random()*.5)+"s";
+    document.body.appendChild(p);setTimeout(()=>p.remove(),3800);
+  }
+}
+
+// ─────────── THE ON-DEVICE OPTIMIZER ───────────
+function optimizeDay(){
+  const instr=(document.getElementById("planInstruction")?.value||"").toLowerCase();
+  const now=new Date(); const k=tKey();
+  const day=data.sadhana[k]||{};
+  const undoneSadhana=SADHANA.filter(s=>!day[s]);
+  const open=data.tasks.filter(t=>!t.done);
+
+  // 1) parse the instruction
+  let startH=Math.max(now.getHours()+ (now.getMinutes()>30?1:0), 5), endH=22;
+  const range=instr.match(/(\d{1,2})\s*(?:am|pm)?\s*(?:-|to|–)\s*(\d{1,2})\s*(am|pm)?/);
+  if(range){
+    let a=parseInt(range[1]),b=parseInt(range[2]);
+    if(range[3]==="pm"&&b<12)b+=12; if(/pm/.test(instr)&&a<12&&a<b-12===false&&range[0].includes("pm")){}
+    if(a<12&&instr.includes("pm")&&a<=6)a+=12;
+    if(b<=a)b=a+6;
+    startH=Math.max(a,now.getHours()); endH=Math.min(b,23);
+  }
+  if(instr.includes("night shift")){startH=Math.max(startH,13);endH=23;}
+  const gentle=/low energy|gentle|tired|light day|easy/.test(instr);
+  let focusDomain=null;
+  for(const d in DOMAINS){ if(instr.includes(d)||instr.includes(DOMAINS[d].label.toLowerCase()))focusDomain=d; }
+  if(/sadhana|kriya|spiritual|meditat/.test(instr))focusDomain="spiritual";
+  if(/jeevani|tinyfin|youtube|launch|business|income|money/.test(instr))focusDomain=focusDomain||"wealth";
+
+  // 2) score tasks: priority + age + domain-balance deficit + focus bonus
+  const counts={personal:0,health:0,wealth:0,spiritual:0};
+  open.forEach(t=>counts[t.domain]++);
+  const maxCount=Math.max(1,...Object.values(counts));
+  const scored=open.map(t=>{
+    const age=Math.min(7,Math.floor((Date.now()-t.id)/86400000));
+    let s=(t.priority==="high"?3:0)+age*.6+(counts[t.domain]/maxCount)*1.5;
+    if(focusDomain&&t.domain===focusDomain)s+=4;
+    if(gentle&&t.priority==="high")s-=1; // gentle days de-emphasize heavy pushes
+    return {t,s};
+  }).sort((a,b)=>b.s-a.s);
+
+  // 3) build time blocks
+  const blocks=[]; let h=startH;
+  const fmt=x=>{const hh=((x+11)%12)+1;return hh+(x<12||x>=24?" AM":" PM");};
+  const push=(label,dur)=>{ if(h+dur<=endH+0.01){blocks.push(fmt(h)+" – "+fmt(h+dur)+"  ·  "+label);h+=dur;} };
+
+  if(undoneSadhana.length){
+    const pick=undoneSadhana.slice(0,gentle?2:3).join(" + ");
+    push("Sadhana: "+pick+(h<8?" (the quiet hours are yours)":""),1);
+  }
+  const taskCap=gentle?3:5;
+  scored.slice(0,taskCap).forEach((x,i)=>{
+    push("["+DOMAINS[x.t.domain].label+"] "+x.t.text, x.t.priority==="high"?1.5:1);
+  });
+  if(h<endH-1&&!gentle)push("Buffer / overflow — the day always invents something",1);
+  if(counts.health===0&&!/health/.test(instr))push("Movement break — 20 min walk or stretch (no Health tasks logged, so I'm prescribing one)",0.5);
+  push("Wind down: journal one honest paragraph, then screens off",0.5);
+
+  // 4) the ONE thing
+  const one=scored[0]?("["+DOMAINS[scored[0].t.domain].label+"] "+scored[0].t.text)
+    :(undoneSadhana.length?("Sadhana — "+undoneSadhana[0]):"Rest. Genuinely. That's the assignment.");
+
+  // 5) commentary
+  const lines=[];
+  if(undoneSadhana.length===0)lines.push("Sadhana already complete — the hardest win is banked before the world woke up.");
+  else if(undoneSadhana.length>=4)lines.push("Sadhana is mostly pending; anchor it first or the day will happily eat it.");
+  if(gentle)lines.push("Kept it light as asked — three good moves beat seven frantic ones.");
+  if(focusDomain)lines.push("Weighted the plan toward "+DOMAINS[focusDomain].label+" per your instruction.");
+  if(scored.length===0)lines.push("No open tasks, so today's plan is maintenance and presence. Enjoy the rare silence.");
+  if(open.length>7)lines.push("You have "+open.length+" open loops — the plan picks the vital few; the rest can wait without guilt.");
+  if(!lines.length)lines.push("Balanced spread across your four domains. Execute the top block first; momentum does the rest.");
+
+  const plan="THE ONE THING → "+one+"\n\n"+blocks.join("\n")+"\n\n"+lines.join(" ");
+  data.plan[k]=plan; save(); render();
+  flash("Plan built — instantly, on-device, no oracle needed.");
+}
+
+// ─────────── ON-DEVICE REFLECTION ───────────
+const OBS={
+  "😌":["There's a settled quality in this entry — the kind that usually follows effort, not luck.","Contentment that can name itself tends to last longer."],
+  "😊":["The lightness here is earned; you can hear it in how plainly you wrote.","Good days deserve documentation as much as hard ones — well logged."],
+  "🔥":["There's real drive in this one. Fire is fuel, as long as you decide the direction.","Intensity like this is an asset — worth pointing at one target, not five."],
+  "😐":["Flat days are honest data too. Not every entry has to be a headline.","Neutral is often the mind between chapters. Nothing to fix, something to watch."],
+  "😩":["That sounds heavy, and writing it down anyway is not a small thing.","Exhaustion written honestly is already half-processed."],
+  "🌊":["A lot moving under the surface here. Waves pass; the watcher stays.","Turbulent entries often read differently a week later — this one is worth revisiting."]
+};
+const QUESTIONS=[
+  "If this exact day repeated tomorrow, what one thing would you change first?",
+  "What part of this was in your control — and what part never was?",
+  "What would the calmest version of you say about this?",
+  "Is there a smaller version of this problem you could solve today?",
+  "What are you tolerating right now that you've stopped noticing?",
+  "If Sanvika someday read this entry, what would you want the next one to say?",
+  "Which of your four domains is quietly asking for attention here?"
+];
+function reflect(id){
+  const e=data.journal.find(j=>j.id===id); if(!e)return;
+  const obs=OBS[e.mood]||OBS["😐"];
+  const words=e.text.split(/\s+/).filter(w=>w.length>6);
+  const kw=words.length?words[Math.floor(e.id%words.length)].replace(/[^\w]/g,""):"";
+  const o=obs[e.id%obs.length];
+  const q=QUESTIONS[e.id%QUESTIONS.length];
+  e.reflection=(kw?('"'+kw+'" seems to be doing a lot of work in this entry. '):"")+o+" "+q;
+  save();render();
+}
+
+// ─────────── RENDER ───────────
+function chipStyle(dom,active){const c=DOMAINS[dom];
+  return "background:"+(active?c.color:c.soft)+";color:"+(active?"#241031":c.color)+";border-color:"+c.color+"66";}
+
+function sadhanaStreak(){
+  let streak=0;const d=new Date();
+  for(let i=0;i<365;i++){
+    const day=data.sadhana[tKey(d)];
+    if(day&&Object.values(day).some(Boolean)){streak++;d.setDate(d.getDate()-1);}
+    else{if(i===0){d.setDate(d.getDate()-1);continue;}break;}
+  }
+  return streak;
+}
+
+function domainProgress(){
+  const k=tKey(),day=data.sadhana[k]||{};
+  const p={};
+  for(const d in DOMAINS){
+    const all=data.tasks.filter(t=>t.domain===d), done=all.filter(t=>t.done);
+    if(d==="spiritual"){
+      const sd=Object.values(day).filter(Boolean).length;
+      const tot=SADHANA.length+all.length, num=sd+done.length;
+      p[d]=tot?num/tot:0;
+    }else p[d]=all.length?done.length/all.length:0;
+  }
+  return p;
+}
+
+function pranaWheel(){
+  const p=domainProgress();
+  const doms=["personal","health","wealth","spiritual"];
+  const R=52,C=2*Math.PI*R,seg=C/4,gap=7;
+  let arcs="";
+  doms.forEach((d,i)=>{
+    const len=Math.max(0.001,(seg-gap)*p[d]);
+    const off=-(i*seg);
+    arcs+='<circle class="arc" cx="70" cy="70" r="'+R+'" stroke="'+DOMAINS[d].color+'" stroke-dasharray="'+len+' '+(C-len)+'" stroke-dashoffset="'+off+'" transform="rotate(-90 70 70)"/>';
+  });
+  const legend=doms.map(d=>'<div class="row"><span class="dot" style="background:'+DOMAINS[d].color+'"></span>'+DOMAINS[d].label+'<span class="pct" style="color:'+DOMAINS[d].color+'">'+Math.round(p[d]*100)+'%</span></div>').join("");
+  return '<div class="card"><h2>Prana wheel</h2><div class="wheel-wrap">'+
+    '<svg class="wheel" width="140" height="140" viewBox="0 0 140 140" role="img" aria-label="Daily balance across four life domains">'+
+    '<circle class="track" cx="70" cy="70" r="'+R+'"/>'+arcs+
+    '<circle class="core" cx="70" cy="70" r="9" fill="#F5F1FF" opacity=".9"/></svg>'+
+    '<div class="legend">'+legend+'<p class="small" style="margin:8px 0 0">Each arc fills as its domain completes today. Balance is the goal, not perfection.</p></div></div></div>';
+}
+
+function render(){
+  document.getElementById("greeting").textContent=greeting();
+  const main=document.getElementById("main");
+  const R={today:renderToday,journal:renderJournal,tasks:renderTasks,log:renderLog,ideas:renderIdeas,prompts:renderPrompts,setup:renderSetup};
+  main.innerHTML=(R[tab]||renderToday)();
+  renderNav();
+}
+
+function renderToday(){
+  const k=tKey(),day=data.sadhana[k]||{};
+  const done=Object.values(day).filter(Boolean).length;
+  const open=data.tasks.filter(t=>!t.done);
+  const streak=sadhanaStreak();
+  let h=pranaWheel();
+  h+='<div class="card"><h2>Sadhana · today</h2><p class="small">'+done+'/'+SADHANA.length+' done · <span class="streak-flame">🔥</span> '+streak+'-day streak'+(done===SADHANA.length?' · full house 🙏':'')+'</p><div class="chips">';
+  SADHANA.forEach(item=>{h+='<button class="chip" style="'+chipStyle("spiritual",!!day[item])+'" onclick="toggleSadhana(\''+esc(item)+'\')">'+(day[item]?"✓ ":"")+esc(item)+'</button>';});
+  h+='</div></div>';
+  const plan=data.plan[k];
+  h+='<div class="card"><h2>Optimize my day</h2><p class="small">The built-in engine reads your open tasks, sadhana status, and your instruction — then builds a prioritized, time-blocked plan instantly. Works fully offline.</p>'+
+    '<textarea id="planInstruction" style="min-height:66px;margin-top:10px" placeholder="Instruction (optional) — \'night shift, 2pm to 10pm\', \'focus wealth\', \'low energy today\'…"></textarea>'+
+    '<button class="btn" onclick="optimizeDay()">⚡ Optimize & prioritize</button>';
+  if(plan){
+    const parts=plan.split("\n\n");
+    h+='<div class="plan-box">';
+    if(parts[0]&&parts[0].startsWith("THE ONE THING")){
+      h+='<div class="one-thing"><b>'+esc(parts[0].replace("THE ONE THING → ","★ The one thing: "))+'</b></div><pre>'+esc(parts.slice(1).join("\n\n"))+'</pre>';
+    }else h+='<pre>'+esc(plan)+'</pre>';
+    h+='</div>';
+  }
+  h+='</div><div class="card"><h2>Open loops</h2>';
+  if(!open.length)h+='<p class="small">Zero open tasks. Either you\'re enlightened or you forgot to add them.</p>';
+  else open.slice(0,5).forEach(t=>{h+='<div class="task-row"><span style="width:9px;height:9px;border-radius:99px;background:'+DOMAINS[t.domain].color+';flex-shrink:0"></span><span style="font-size:14px">'+esc(t.text)+(t.priority==="high"?' <span class="small" style="color:var(--wealth)">▲ high</span>':'')+'</span></div>';});
+  return h+'</div>';
+}
+
+function renderJournal(){
+  let h='<div class="card"><h2>New entry</h2><div class="chips" id="moodRow">';
+  MOODS.forEach((m,i)=>{h+='<button class="mood-btn'+(i===0?' sel':'')+'" data-mood="'+m+'" onclick="pickMood(this)" aria-label="mood '+m+'">'+m+'</button>';});
+  h+='</div><textarea id="journalText" style="min-height:110px" placeholder="What\'s actually going on? Be honest — this notebook doesn\'t gossip."></textarea>'+
+    '<button class="btn" onclick="addJournal()">Save entry</button></div>';
+  data.journal.forEach(j=>{
+    h+='<div class="card"><p class="small">'+j.mood+' · '+esc(j.date)+'</p><pre style="margin-top:6px">'+esc(j.text)+'</pre>';
+    if(j.reflection)h+='<div class="reflect"><p class="small" style="color:var(--spiritual);margin:0 0 4px">Reflection</p><pre style="font-size:13.5px">'+esc(j.reflection)+'</pre></div>';
+    else h+='<button class="ghost" style="margin-top:10px" onclick="reflect('+j.id+')">✨ Reflect on this</button>';
+    h+='</div>';
+  });
+  if(!data.journal.length)h+='<p class="small" style="text-align:center;padding:20px">An empty journal is just a full life waiting to be noticed.</p>';
+  return h;
+}
+
+let curMood="😌",curDom="personal",curPri="normal",curIdeaDom="wealth";
+function renderTasks(){
+  let h='<div class="card"><h2>Add a task</h2>'+
+  '<input id="taskText" placeholder="e.g., Record TinyFin episode, review ESD punch list…" onkeydown="if(event.key===\'Enter\')addTask()">'+
+  '<div class="chips" id="domRow">';
+  Object.keys(DOMAINS).forEach(d=>{h+='<button class="chip" data-dom="'+d+'" style="'+chipStyle(d,curDom===d)+'" onclick="pickDom(this)">'+DOMAINS[d].label+'</button>';});
+  h+='</div><div class="chips" id="priRow">'+
+    '<button class="chip" data-pri="normal" style="'+priStyle(curPri==="normal")+'" onclick="pickPri(this)">Normal</button>'+
+    '<button class="chip" data-pri="high" style="'+priStyle2(curPri==="high")+'" onclick="pickPri(this)">▲ High priority</button>'+
+  '</div><button class="btn" style="margin-top:2px" onclick="addTask()">Add task</button></div>';
+  Object.keys(DOMAINS).forEach(dom=>{
+    const list=data.tasks.filter(t=>t.domain===dom);
+    if(!list.length)return;
+    h+='<div class="card"><h2 style="color:'+DOMAINS[dom].color+';font-size:16px">'+DOMAINS[dom].label+'</h2>';
+    list.forEach(t=>{
+      h+='<div class="task-row"><button class="check" aria-label="toggle" style="border-color:'+DOMAINS[dom].color+';background:'+(t.done?DOMAINS[dom].color:"transparent")+'" onclick="toggleTask('+t.id+')">'+(t.done?"✓":"")+'</button>'+
+      '<span style="font-size:14px;flex:1;'+(t.done?"text-decoration:line-through;opacity:.5":"")+'">'+esc(t.text)+(t.priority==="high"?' <span class="small" style="color:var(--wealth)">▲</span>':'')+'</span>'+
+      '<button class="ghost" style="padding:3px 10px;font-size:12px" onclick="delTask('+t.id+')" aria-label="delete">✕</button></div>';
+    });
+    h+='</div>';
+  });
+  if(!data.tasks.length)h+='<p class="small" style="text-align:center;padding:20px">No tasks yet. Suspiciously peaceful.</p>';
+  return h;
+}
+function priStyle(a){return "background:"+(a?"#A89DC9":"rgba(168,157,201,.14)")+";color:"+(a?"#241031":"#A89DC9")+";border-color:#A89DC966";}
+function priStyle2(a){return "background:"+(a?"var(--wealth)":"rgba(255,201,77,.14)")+";color:"+(a?"#241031":"var(--wealth)")+";border-color:#FFC94D66";}
+
+function renderLog(){
+  let h='<div class="card"><h2>Event log</h2><p class="small">One-tap timestamps. Anything worth remembering.</p>'+
+  '<input id="eventText" style="margin-top:10px" placeholder="What just happened?" onkeydown="if(event.key===\'Enter\')addEvent()">'+
+  '<button class="btn" onclick="addEvent()">Log it</button></div>';
+  data.events.forEach(ev=>{h+='<div class="card" style="padding:13px 17px"><p class="small">'+esc(ev.time)+'</p><p style="margin:4px 0 0;font-size:14px">'+esc(ev.text)+'</p></div>';});
+  return h;
+}
+
+function renderIdeas(){
+  let h='<div class="card"><h2>Idea catcher</h2><p class="small">Niches, business sparks, video concepts. Capture in five seconds, evaluate later.</p>'+
+  '<input id="ideaText" style="margin-top:10px" placeholder="e.g., Shorts series: 60-sec aquascape transformations…" onkeydown="if(event.key===\'Enter\')addIdea()">'+
+  '<div class="chips" id="ideaDomRow">';
+  Object.keys(DOMAINS).forEach(d=>{h+='<button class="chip" data-dom="'+d+'" style="'+chipStyle(d,curIdeaDom===d)+'" onclick="pickIdeaDom(this)">'+DOMAINS[d].label+'</button>';});
+  h+='</div><button class="btn" style="margin-top:2px" onclick="addIdea()">Catch it</button></div>';
+  data.ideas.forEach(i=>{
+    h+='<div class="card idea-card" style="border-left-color:'+DOMAINS[i.category].color+'"><p class="small">'+DOMAINS[i.category].label+' · '+esc(i.time)+'</p>'+
+    '<p style="margin:5px 0 0;font-size:14px;line-height:1.5">'+esc(i.text)+'</p>'+
+    '<button class="ghost" style="margin-top:8px;padding:3px 10px;font-size:12px" onclick="delIdea('+i.id+')">Discard</button></div>';
+  });
+  if(!data.ideas.length)h+='<p class="small" style="text-align:center;padding:20px">Ideas arrive unannounced and leave without notice. This is the guest register.</p>';
+  return h;
+}
+
+function renderPrompts(){
+  let h='<div class="card"><h2>Prompt vault</h2>'+
+  '<input id="promptTitle" placeholder="Title (e.g., KPI writeup — 25-word style)">'+
+  '<textarea id="promptBody" style="margin-top:8px" placeholder="The prompt itself…"></textarea>'+
+  '<button class="btn" onclick="addPrompt()">Save prompt</button></div>';
+  data.prompts.forEach(p=>{
+    h+='<div class="card"><h2 style="font-size:16px">'+esc(p.title)+'</h2><pre style="font-size:13.5px">'+esc(p.body)+'</pre>'+
+    '<button class="ghost" style="margin-top:10px" onclick="copyPrompt('+p.id+')">Copy</button></div>';
+  });
+  if(!data.prompts.length)h+='<p class="small" style="text-align:center;padding:20px">Great prompts are hard-won. Vault them here before they vanish.</p>';
+  return h;
+}
+
+function renderSetup(){
+  return '<div class="card"><h2>Backup</h2><p class="small">Your data lives on this device — private, offline, yours. Export a backup file now and then; future you insists.</p>'+
+  '<button class="btn" onclick="exportData()">⬇ Export backup (JSON)</button>'+
+  '<p class="small" style="margin-top:16px">Restore from backup:</p>'+
+  '<input type="file" accept=".json" style="margin-top:6px" onchange="importData(this)"></div>'+
+  '<div class="card"><h2>About</h2><p class="small">Antara · AI Personal Journal. The planning and reflection engines run entirely on this device — no accounts, no servers, no waiting, no cost. Four domains, one wheel, one honest paragraph a day.</p></div>';
+}
+
+function renderNav(){
+  const tabs=[["today","Today"],["journal","Journal"],["tasks","Tasks"],["log","Log"],["ideas","Ideas"],["prompts","Prompts"],["setup","Setup"]];
+  document.getElementById("nav").innerHTML=tabs.map(([k,l])=>
+    '<button class="'+(tab===k?"active":"")+'" onclick="setTab(\''+k+'\')"><svg viewBox="0 0 24 24" aria-hidden="true">'+ICONS[k==="setup"?"setup":k]+'</svg>'+l+'</button>').join("");
+}
+
+// ─────────── ACTIONS ───────────
+function setTab(t){tab=t;render();window.scrollTo({top:0});}
+function pickMood(el){curMood=el.dataset.mood;document.querySelectorAll(".mood-btn").forEach(b=>b.classList.remove("sel"));el.classList.add("sel");}
+function pickDom(el){curDom=el.dataset.dom;document.querySelectorAll("#domRow .chip").forEach(b=>b.setAttribute("style",chipStyle(b.dataset.dom,b.dataset.dom===curDom)));}
+function pickIdeaDom(el){curIdeaDom=el.dataset.dom;document.querySelectorAll("#ideaDomRow .chip").forEach(b=>b.setAttribute("style",chipStyle(b.dataset.dom,b.dataset.dom===curIdeaDom)));}
+function pickPri(el){curPri=el.dataset.pri;document.querySelector('#priRow [data-pri="normal"]').setAttribute("style",priStyle(curPri==="normal"));document.querySelector('#priRow [data-pri="high"]').setAttribute("style",priStyle2(curPri==="high"));}
+function toggleSadhana(item){
+  const k=tKey();const day=Object.assign({},data.sadhana[k]||{});day[item]=!day[item];data.sadhana[k]=day;save();render();
+  if(Object.values(day).filter(Boolean).length===SADHANA.length){confetti();flash("Full sadhana. The day bows to you. 🙏");}
+}
+function addTask(){const v=document.getElementById("taskText").value;if(!v.trim())return;
+  data.tasks.unshift({id:Date.now(),text:v.trim(),domain:curDom,priority:curPri,done:false});save();render();}
+function toggleTask(id){
+  data.tasks=data.tasks.map(t=>t.id===id?Object.assign({},t,{done:!t.done}):t);save();render();
+  const open=data.tasks.filter(t=>!t.done);
+  if(data.tasks.length&&open.length===0){confetti();flash("Every task done. Frame this day.");}
+}
+function delTask(id){data.tasks=data.tasks.filter(t=>t.id!==id);save();render();}
+function addJournal(){const v=document.getElementById("journalText").value;if(!v.trim())return;
+  data.journal.unshift({id:Date.now(),text:v.trim(),mood:curMood,date:new Date().toLocaleString(),reflection:""});save();render();
+  flash("Entry saved. Your future self thanks you.");}
+function addEvent(){const v=document.getElementById("eventText").value;if(!v.trim())return;
+  data.events.unshift({id:Date.now(),text:v.trim(),time:new Date().toLocaleString()});save();render();flash("Logged.");}
+function addIdea(){const v=document.getElementById("ideaText").value;if(!v.trim())return;
+  data.ideas.unshift({id:Date.now(),text:v.trim(),category:curIdeaDom,time:new Date().toLocaleString()});save();render();
+  flash("Idea caught. They're slippery — good reflexes.");}
+function delIdea(id){data.ideas=data.ideas.filter(i=>i.id!==id);save();render();}
+function addPrompt(){const t=document.getElementById("promptTitle").value,b=document.getElementById("promptBody").value;
+  if(!t.trim()||!b.trim())return;data.prompts.unshift({id:Date.now(),title:t.trim(),body:b.trim()});save();render();flash("Prompt vaulted.");}
+function copyPrompt(id){const p=data.prompts.find(x=>x.id===id);if(p){navigator.clipboard.writeText(p.body);flash("Copied to clipboard.");}}
+function exportData(){
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);
+  a.download="antara-backup-"+tKey()+".json";a.click();
+}
+function importData(input){
+  const f=input.files[0];if(!f)return;const r=new FileReader();
+  r.onload=()=>{try{data=Object.assign(load(),JSON.parse(r.result));save();render();flash("Backup restored.");}catch(e){flash("That file didn't parse. Wrong file?");}};
+  r.readAsText(f);
+}
+
+// ─────────── BOOT ───────────
+document.getElementById("tagline").textContent=TAGLINES[Math.floor(Math.random()*TAGLINES.length)];
+render();
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script>
+</body>
+</html>
